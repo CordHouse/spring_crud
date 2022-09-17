@@ -27,7 +27,7 @@ public class UserJpaEntity {
 
     @NotNull
     @Column
-    private String loginId;
+    private String username;
 
     @NotNull
     @Column

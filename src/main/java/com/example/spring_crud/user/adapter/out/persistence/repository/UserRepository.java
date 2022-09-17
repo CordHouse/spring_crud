@@ -1,7 +1,6 @@
 package com.example.spring_crud.user.adapter.out.persistence.repository;
 
 import com.example.spring_crud.user.adapter.out.persistence.jpaentity.UserJpaEntity;
-import com.example.spring_crud.user.pojo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +12,6 @@ import java.util.Optional;
  */
 @Repository
 public interface UserRepository extends JpaRepository<UserJpaEntity, Long> {
-    Optional<UserJpaEntity> findByLoginId(String loginId);
-    boolean existsByLoginId(String loginId);
+    Optional<UserJpaEntity> findByUsername(String loginId);
+    boolean existsByUsername(String loginId);
 }

@@ -20,7 +20,7 @@ public class UserLoginRequestDto {
     //최소 8 자, 하나 이상의 문자와 하나의 숫자 정규식
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")
     @Size(min = 6, max = 15)
-    private final String loginId;
+    private final String username;
 
     @NonNull @NotNull
     @Getter
