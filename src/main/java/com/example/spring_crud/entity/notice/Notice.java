@@ -1,4 +1,4 @@
-package com.example.spring_crud.entity;
+package com.example.spring_crud.entity.notice;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
