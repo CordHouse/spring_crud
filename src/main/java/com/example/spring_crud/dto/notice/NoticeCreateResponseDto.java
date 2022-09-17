@@ -1,6 +1,6 @@
-package com.example.spring_crud.dto;
+package com.example.spring_crud.dto.notice;
 
-import com.example.spring_crud.entity.Notice;
+import com.example.spring_crud.entity.notice.Notice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
