@@ -2,6 +2,10 @@ package com.example.spring_crud.user.pojo;
 
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 /**
  * @apiNote
@@ -10,17 +14,51 @@ import lombok.*;
  */
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class User {
+public class User implements UserDetails {
     @Getter
     private final UserId userId;
 
-    @Getter
-    private LoginId loginId;
+    private Username username;
 
-    @Getter
-    private LoginPassword loginPassword;
+    private Password password;
+
+    private Collection<? extends GrantedAuthority> authorities;
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password.getValue();
+    }
+
+    @Override
+    public String getUsername() {
+        return username.getValue();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 
 
     @Value
@@ -29,12 +67,12 @@ public class User {
     }
 
     @Value
-    public static class LoginId {
+    public static class Username {
         private String value;
     }
 
     @Value
-    public static class LoginPassword {
+    public static class Password {
         private String value;
     }
 }

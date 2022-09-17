@@ -20,7 +20,7 @@ import javax.validation.Valid;
  * 유저 인증, 인가 API
  */
 @RequiredArgsConstructor
-@RequestMapping("/api/")
+@RequestMapping("/api")
 @RestController
 public class UserAuthController {
     final private UserLoginUseCase userLoginUseCase;
@@ -33,11 +33,9 @@ public class UserAuthController {
             }
     )
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("register")
+    @PostMapping("/sign-up")
     public Response userRegister(@ApiParam(required = true, name = "회원가입 정보") @RequestBody @Valid UserRegisterRequestDto userRegisterRequestDto){
-        System.out.println("ddd");
         userRegisterUseCase.userRegister(userRegisterRequestDto);
-        System.out.println("ddd");
         return Response.success(HttpStatus.CREATED);
     }
 
@@ -48,9 +46,8 @@ public class UserAuthController {
             }
     )
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("login")
+    @PostMapping("/sign-in")
     public Response userRegister(@ApiParam(required = true, name = "로그인 정보") @RequestBody @Valid UserLoginRequestDto userLoginRequestDto){
-        userLoginUseCase.userLogin(userLoginRequestDto);
-        return Response.success(null);
+        return Response.success(userLoginUseCase.userLogin(userLoginRequestDto));
     }
 }

@@ -1,16 +1,19 @@
 package com.example.spring_crud.user.application.service;
 
+import com.example.spring_crud.configuration.security.provider.JwtTokenProvider;
 import com.example.spring_crud.user.application.port.in.UserLoginUseCase;
 import com.example.spring_crud.user.application.port.in.UserRegisterUseCase;
+import com.example.spring_crud.user.application.port.out.CustomUserDetailsManager;
 import com.example.spring_crud.user.application.port.out.InsertAccountPort;
 import com.example.spring_crud.user.application.port.out.LoadAccountPort;
 import com.example.spring_crud.user.pojo.User;
+import com.example.spring_crud.user.pojo.dto.TokenResponseDto;
 import com.example.spring_crud.user.pojo.dto.UserLoginRequestDto;
 import com.example.spring_crud.user.pojo.dto.UserRegisterRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
 
 /**
  * @apiNote
@@ -23,20 +26,26 @@ public class UserManageService implements UserRegisterUseCase, UserLoginUseCase 
     final private LoadAccountPort loadAccountPort;
     final private InsertAccountPort insertAccountPort;
 
+    final private CustomUserDetailsManager userDetailsManager;
+
+    final private PasswordEncoder passwordEncoder;
+
+    final private JwtTokenProvider jwtTokenProvider;
+
     @Override
     public void userRegister(UserRegisterRequestDto userRegisterRequestDto) {
         //lock
 
         //load
-        if(!loadAccountPort.existsUserByLoginId(new User.LoginId(userRegisterRequestDto.getLoginId()))){
+        if(!loadAccountPort.existsUserByUsername(new User.Username(userRegisterRequestDto.getUsername()))){
             //valid
 
             //process
 
             //update
             insertAccountPort.insertUser(User.builder()
-                    .loginId(new User.LoginId(userRegisterRequestDto.getLoginId()))
-                    .loginPassword((new User.LoginPassword(userRegisterRequestDto.getPassword())))
+                    .username(new User.Username(userRegisterRequestDto.getUsername()))
+                    .password((new User.Password(passwordEncoder.encode(userRegisterRequestDto.getPassword()))))
                     .build());
         }
 
@@ -44,7 +53,10 @@ public class UserManageService implements UserRegisterUseCase, UserLoginUseCase 
     }
 
     @Override
-    public void userLogin(UserLoginRequestDto userLoginRequestDto) {
-
+    public TokenResponseDto userLogin(UserLoginRequestDto userLoginRequestDto) {
+        UserDetails user = userDetailsManager.loadUserByUsername(userLoginRequestDto.getUsername());
+        return TokenResponseDto.builder()
+                .token(jwtTokenProvider.createToken(user.getUsername(), user.getAuthorities()))
+                .build();
     }
 }
