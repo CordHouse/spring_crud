@@ -2,6 +2,7 @@ package com.example.spring_crud.user.adapter.in.web;
 
 import com.example.spring_crud.user.application.port.in.UserLoginUseCase;
 import com.example.spring_crud.user.application.port.in.UserRegisterUseCase;
+import com.example.spring_crud.user.pojo.dto.UserLoginRequestDto;
 import com.example.spring_crud.user.pojo.dto.UserRegisterRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,11 +53,11 @@ class UserAuthControllerTest {
     void userRegister() throws Exception {
         UserRegisterRequestDto userRegisterRequestDto = UserRegisterRequestDto
                 .builder()
-                .loginId("aaaaaaa2")
+                .username("aaaaaaa2")
                 .password("aaaaaaaaA1@")
                 .build();
 
-        mockMvc.perform(post("/api/register")
+        mockMvc.perform(post("/api/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRegisterRequestDto)))
                 .andExpect(status().isCreated());
@@ -65,8 +66,20 @@ class UserAuthControllerTest {
 
     }
 
-    @DisplayName("유저 로그인")
+    @DisplayName("user login")
     @Test
-    void testUserRegister() {
+    void userLogin() throws Exception {
+        UserLoginRequestDto userLoginRequestDto = UserLoginRequestDto
+                .builder()
+                .username("aaaaaaa2")
+                .password("aaaaaaaaA1@")
+                .build();
+
+        mockMvc.perform(post("/api/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userLoginRequestDto)))
+                .andExpect(status().isOk());
+
+        verify(userLoginUseCase).userLogin(refEq(userLoginRequestDto));
     }
 }
