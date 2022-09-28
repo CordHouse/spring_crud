@@ -47,7 +47,7 @@ public class UserAuthController {
     )
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sign-in")
-    public Response userRegister(@ApiParam(required = true, name = "로그인 정보") @RequestBody @Valid UserLoginRequestDto userLoginRequestDto){
+    public Response userLogin(@ApiParam(required = true, name = "로그인 정보") @RequestBody @Valid UserLoginRequestDto userLoginRequestDto){
         return Response.success(userLoginUseCase.userLogin(userLoginRequestDto));
     }
 }
