@@ -1,5 +1,8 @@
 package com.example.spring_crud.advice;
 
+import com.example.spring_crud.exception.notebox.NotFoundMessageException;
+import com.example.spring_crud.exception.notebox.NotFoundNoteBoxException;
+import com.example.spring_crud.exception.notebox.NotFoundUserException;
 import com.example.spring_crud.exception.notice.NoticeBoardTitleNotFoundException;
 import com.example.spring_crud.exception.notice.NoticeBoardsNotFoundException;
 import com.example.spring_crud.exception.notice.NoticeNotFoundSearchDateException;
@@ -37,5 +40,23 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response noticeNotFoundSearchDateException(){
         return Response.failure(400, "해당일에 작성된 게시글이 존재하지 않습니다.");
+    }
+
+    @ExceptionHandler(NotFoundNoteBoxException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response notFoundNoteBoxException(){
+        return Response.failure(400, "쪽지함이 비어있습니다.");
+    }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response notFoundUserException(){
+        return Response.failure(400, "해당 유저는 존재하지 않습니다.");
+    }
+
+    @ExceptionHandler(NotFoundMessageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Response notFoundMessageException(){
+        return Response.failure(400, "쪽지가 존재하지 않습니다.");
     }
 }
