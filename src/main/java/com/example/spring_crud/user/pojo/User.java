@@ -13,14 +13,18 @@ import java.util.Collection;
  * 객체에 대한 분리는 도메인 영역의 확장에 따라 고려할 필요가 있는데 본 객체에 얼마나의 필드를 포함할 것이고 분리할 것인지가 관건(현재 Deprecated된 {@link UserLoginIdAndPassword }UserLoginIdAndPassword처럼 분리할 것인지를 의미)
  */
 @Builder
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User implements UserDetails {
+
     @Getter
     private final UserId userId;
 
     private Username username;
 
     private Password password;
+
+    private Name name;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -38,6 +42,10 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return username.getValue();
+    }
+
+    public String getName() {
+        return name.getValue();
     }
 
     @Override
@@ -73,6 +81,11 @@ public class User implements UserDetails {
 
     @Value
     public static class Password {
+        private String value;
+    }
+
+    @Value
+    public static class Name {
         private String value;
     }
 }
