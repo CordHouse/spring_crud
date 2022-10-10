@@ -1,7 +1,10 @@
 package com.example.spring_crud.user.adapter.out.persistence;
 
+import com.example.spring_crud.user.adapter.out.persistence.jpaentity.RoleJpaEntity;
 import com.example.spring_crud.user.adapter.out.persistence.jpaentity.UserJpaEntity;
 import com.example.spring_crud.user.adapter.out.persistence.jpaentity.UserMapper;
+import com.example.spring_crud.user.adapter.out.persistence.jpaentity.UserRole;
+import com.example.spring_crud.user.adapter.out.persistence.repository.RoleRepository;
 import com.example.spring_crud.user.adapter.out.persistence.repository.UserRepository;
 import com.example.spring_crud.user.application.port.out.CustomUserDetailsManager;
 import com.example.spring_crud.user.application.port.out.InsertAccountPort;
@@ -27,6 +30,8 @@ import java.util.*;
 @Service
 public class UserPersistenceAdapter implements LoadAccountPort, InsertAccountPort, CustomUserDetailsManager {
     private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
     private final UserMapper userMapper;
 
     @Override
@@ -50,7 +55,25 @@ public class UserPersistenceAdapter implements LoadAccountPort, InsertAccountPor
 
     @Override
     public void insertUser(User user) {
-        userRepository.save(userMapper.mapToJpaEntityUser(user));
+        UserJpaEntity userJpaEntity = userMapper.mapToJpaEntityUser(user);
+        userJpaEntity.setUserRoles(new ArrayList<>());
+
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        for (GrantedAuthority grantedAuthority: user.getAuthorities()){
+            if(!roleRepository.existsByRolename(grantedAuthority.getAuthority())){
+                RoleJpaEntity role = RoleJpaEntity.builder().rolename(grantedAuthority.getAuthority()).build();
+                UserRole userRoleMapping = UserRole.builder().userJpaEntity(userJpaEntity).roleJpaEntity(role).build();
+                role.setUserRoles(Arrays.asList(userRoleMapping));
+                roleRepository.save(role);
+                userJpaEntity.getUserRoles().add(userRoleMapping);
+            }else{
+                RoleJpaEntity role = roleRepository.findByRolename(grantedAuthority.getAuthority()).get();
+                UserRole userRoleMapping = UserRole.builder().userJpaEntity(userJpaEntity).roleJpaEntity(role).build();
+                role.getUserRoles().add(userRoleMapping);
+                userJpaEntity.getUserRoles().add(userRoleMapping);
+            }
+        }
+        userRepository.save(userJpaEntity);
     }
 
     @Override
@@ -74,7 +97,7 @@ public class UserPersistenceAdapter implements LoadAccountPort, InsertAccountPor
         //Collection<? extends GrantedAuthority> authorities =
         //Set<GrantedAuthority> grantedAuthorities = new HashSet();
         //for (Role role: user.getRoles()) grantedAuthorities.add(new SimpleGrantedAuthority(role.getName());
-        Collection<? extends GrantedAuthority> authorities = new LinkedList<>();
+        Collection<? extends GrantedAuthority> authorities = null;
         return new org.springframework.security.core.userdetails.User(
                 domainUser.getUsername(),
                 domainUser.getPassword(),

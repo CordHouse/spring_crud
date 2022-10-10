@@ -58,6 +58,7 @@ class UserManageServiceTest {
         UserRegisterRequestDto userRegisterRequestDto = UserRegisterRequestDto.builder()
                 .username("aaaaaaa2")
                 .password("aaaaaaaaA1@")
+                .name("hong")
                 .build();
 
         given(loadAccountPort.existsUserByUsername(ArgumentMatchers.any(User.Username.class)))

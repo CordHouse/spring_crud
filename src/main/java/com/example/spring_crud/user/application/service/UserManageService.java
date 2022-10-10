@@ -6,14 +6,20 @@ import com.example.spring_crud.user.application.port.in.UserRegisterUseCase;
 import com.example.spring_crud.user.application.port.out.CustomUserDetailsManager;
 import com.example.spring_crud.user.application.port.out.InsertAccountPort;
 import com.example.spring_crud.user.application.port.out.LoadAccountPort;
+import com.example.spring_crud.user.pojo.CustomGrantedAuthority;
 import com.example.spring_crud.user.pojo.User;
 import com.example.spring_crud.user.pojo.dto.TokenResponseDto;
 import com.example.spring_crud.user.pojo.dto.UserLoginRequestDto;
 import com.example.spring_crud.user.pojo.dto.UserRegisterRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @apiNote
@@ -46,6 +52,8 @@ public class UserManageService implements UserRegisterUseCase, UserLoginUseCase 
             insertAccountPort.insertUser(User.builder()
                     .username(new User.Username(userRegisterRequestDto.getUsername()))
                     .password((new User.Password(passwordEncoder.encode(userRegisterRequestDto.getPassword()))))
+                    .name(new User.Name(userRegisterRequestDto.getName()))
+                    .authorities(Arrays.asList(new CustomGrantedAuthority("ROLE_USER")))
                     .build());
         }
 

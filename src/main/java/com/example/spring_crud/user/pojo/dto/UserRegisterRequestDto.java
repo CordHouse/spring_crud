@@ -27,4 +27,9 @@ public class UserRegisterRequestDto {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$")
     @Size(min = 8, max = 20)
     private final String password;
+
+    @NonNull @NotNull
+    @Getter
+    @Size(min = 2, max = 20)
+    private String name;
 }

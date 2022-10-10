@@ -1,7 +1,11 @@
 package com.example.spring_crud.user.adapter.out.persistence.jpaentity;
 
+import com.example.spring_crud.user.pojo.CustomGrantedAuthority;
 import com.example.spring_crud.user.pojo.User;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * @apiNote
@@ -14,6 +18,8 @@ public class UserMapper {
                 .userId(new User.UserId(userJpaEntity.getId()))
                 .username(new User.Username(userJpaEntity.getUsername()))
                 .password(new User.Password(userJpaEntity.getPassword()))
+                .name(new User.Name(userJpaEntity.getName()))
+                .authorities(userJpaEntity.getUserRoles().stream().map(role-> new CustomGrantedAuthority(role.getRoleJpaEntity().getRolename())).toList())
                 .build();
     }
 
@@ -22,6 +28,7 @@ public class UserMapper {
                 .id(((user.getUserId()==null?null:user.getUserId().getValue())))
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .name(user.getName())
                 .build();
     }
 }
